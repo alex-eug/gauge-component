@@ -1,10 +1,7 @@
 import React from 'react';
 import './gauge.css';
 
-
-
-
-export const Gauge = ({ radius, minRange, maxRange, currentValue }) => {
+export const Gauge = ({ radius, minRange, maxRange, currentValue, step=11 }) => {
 
     function map_range(value, low1, high1, low2, high2) {
         return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
@@ -18,10 +15,42 @@ export const Gauge = ({ radius, minRange, maxRange, currentValue }) => {
     const transform = `rotate(135, ${radius}, ${radius})`;
     const arcRangeValue = arc-map_range(currentValue, minRange, maxRange, 0, arc)
 
-    return (
-        <div>
-        <svg height={radius * 2} width={radius * 2}>
+    const rangeLegend = Array.from({length: step}, (_, i) => i * (maxRange-minRange)/(step-1) + minRange)
 
+    return (
+        <div style={{
+            position:'relative',
+            width: 'min-content'
+        }}>
+        <div style={{
+            width:'fit-content'
+        }}>
+            {
+            rangeLegend.map((char,i) => (
+                <div
+            style={{
+                position:'absolute',
+                height:'20px',
+                width: `20px`,
+                transform: `translate(0px, ${radius}px) rotate(${-90+65+(270/(rangeLegend.length) * i) }deg)`,
+                transformOrigin: `${radius}px 0 0`,
+            }}>
+                <div style={{
+                    fontWeight:'bold',
+                    textAlign:'center',
+                    transform: `rotate(${(270/(rangeLegend.length) * i * -1 + 90 - 65) }deg)`,
+                    }}>
+                    {char}
+                </div> 
+            
+            </div>
+            ))
+            }
+        </div>
+         <svg height={radius * 2} width={radius * 2} style={{
+              transform: 'scale(70%)',
+              width:`${radius*2}`
+         }}>
             <circle
                 class="gauge_base"
                 cx={radius}
@@ -50,21 +79,24 @@ export const Gauge = ({ radius, minRange, maxRange, currentValue }) => {
                 strokeDashoffset={arcRangeValue}
 
             />
-        </svg>
-        {
-           [0,10,20,30,40,50,60,70,80,90,100].map((char,i) => (
-            <div
-        style={{
-            height: `${100}px`,
             
-            
-            
-          }}>
-            {char}
-        </div>
-        ))
-        }
-        
+            </svg>
+            <div style={{
+                fontSize:'xxx-large',
+                fontWeight:'bold',
+                position:'absolute',
+                display:'flex',
+                justifyContent:'center',
+                alignItems:'center',
+                zIndex:2,
+                top:0,
+                bottom:0,
+                left:0,
+                right:0,
+            }}>
+                {currentValue}
+            </div>
+
         </div>
     );
 }
