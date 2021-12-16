@@ -2,7 +2,6 @@ import React from "react";
 import "./gauge.css";
 
 export const Gauge = ({
-  radius,
   minRange,
   maxRange,
   currentValue,
@@ -14,7 +13,7 @@ export const Gauge = ({
   }
   
   const rangeLegend = Array.from({length: step}, (_, i) => Math.trunc(i * (maxRange-minRange)/(step-1) + minRange))
-  console.log(rangeLegend);
+  console.log(step);
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -112,22 +111,21 @@ export const Gauge = ({
       </g>
       <g id="graduation">
         <g>
-          <rect class="cls-12" x="3.37" y="50.42" width="2.44" height="0.82" />
           {
             rangeLegend.map((numberGraduation, index) => (
               <g>
-                <g  x="50%" y="50%" transform={`translate(44.5 52) scale(1,1.04) rotate(${160+20*(index)})`}>
-                  <text class={index%2 ? "cls-8" : "cls-9"} transform={`translate(37 0) rotate(${160+20*(index)*-1+40})`}>
+                <g  x="50%" y="50%" transform={`translate(50 52) scale(1,1.04) rotate(${160+(220/(step-1))*(index)})`}>
+                  <text class={index%2 ? "cls-8" : "cls-9"} transform={`translate(37 0) rotate(${160+(220/(step-1))*(index)*-1+40})`}>
                     {numberGraduation}
                   </text>
                 </g>
-                <g x="50%" y="50%" transform={`translate(50 51) rotate(${160+20*(index)})`}>
+                <g x="50%" y="50%" transform={`translate(50 51) rotate(${160+(220/(step-1))*(index)})`}>
                   <rect class="cls-12"  width="3" height="0.82" transform="translate(44 0)" />
                 </g>
                 {
                   // remove last graduation
                   rangeLegend.length-1 !== index && 
-                  <g x="50%" y="50%" transform={`translate(50 51) rotate(${170+20*(index)})`}>
+                  <g x="50%" y="50%" transform={`translate(50 51) rotate(${170+(220/(step-1))*(index)})`}>
                     <rect class="cls-12"  width="3" height="0.44" transform="translate(44 0)" />
                   </g>
                 }
